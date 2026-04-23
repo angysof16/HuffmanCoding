@@ -119,6 +119,7 @@ std::size_t Huffman::
   // optimiza uso de procesador. s >> 3 usa 3 ticks de reloj, el resto usa uno
   // una division/modulo normal usa 25 ticks de reloj
   return ((s >> 3) + ((s | 7 != 0) ? 1 : 0));
+  /* return ((s >> 3) + ((s & 7 != 0) ? 1 : 0)); */
 }
 
 // -------------------------------------------------------------------------

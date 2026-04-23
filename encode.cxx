@@ -38,7 +38,7 @@ void encode(
   std::size_t L = h.count_leafs();
   // sizeof( std::size_t ) cuanto ocupa en memoria una variable de tipo size_t
   std::size_t S = h.estimate_compression_size() + sizeof(std::size_t);
-  S += L * (sizeof(std::size_t) * sizeof(std::uint8_t));
+  S += L * (sizeof(std::size_t) + sizeof(std::uint8_t));
   // #L + #C (codigo) + #F (frecuencia) + #C + #F + ... + #C + #F
   //|-St-|---------------------------L---------------------------|   --> 0100...1
 

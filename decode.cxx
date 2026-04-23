@@ -70,18 +70,24 @@ void decode(
     ptr += sizeof(std::size_t);
 
     // creo nodo con esos datos y agrego e n vector
-    Huffman *nuevoHuffman = new Huffman(c, f);
-    nodos.push_back(nuevoHuffman);
+    /* Huffman *nuevoHuffman = new Huffman(c, f); */
+    nodos.push_back(new Huffman(c, f));
   }
+  
+  // reconstruir con el mismo vector de 256 que usa el encode 
+  std::vector<Huffman *> hf(1 << (8 * sizeof(std::uint8_t)), nullptr);
+  for (Huffman *n: nodos)
+    hf[n->symbol()] = n;
 
-  // reconstruir arbol
-  Huffman h(nodos);
+  // reconstruir arbol identico al de encode
+  Huffman h(hf);
 
   // NAvegar el arbol con los bits del mensaje codificado
   Huffman *nodo = &h; //empiezo en la raiz
   std::size_t pos = 0;
 
   std::size_t total = h.frequency(); // cantidad de simbolos que tengo que decodificar
+  
   for (std::size_t i = 0; i < total; i++){
     // navegar bit a bit hasta llegar a una hoja
 
