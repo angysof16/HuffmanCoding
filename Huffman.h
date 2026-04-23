@@ -31,6 +31,16 @@ public:
     );
 
   std::size_t count_leafs( ) const;
+  
+  // -------------------------------------------------------------------------
+  // NUEVO
+  // m_D m_F m_L m_R son protected, no puedo acceder a ellos desde decode.cxx
+  // no funciono heredar HuffmanDecoder de Huffman
+  // retorno hijo izquierdo, derecho y byte que representa el nodo hoja
+  Huffman* left()   const { return this->m_L; }
+  Huffman* right()  const { return this->m_R; }
+  std::uint8_t symbol() const { return this->m_D; }
+  // -------------------------------------------------------------------------
 
 private:
   void _build( std::vector< Huffman* >& hf );

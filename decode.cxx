@@ -2,6 +2,7 @@
 #include "Helpers.h"
 #include "Huffman.h"
 
+/*
 // creo clase HuffmanDecoder que hereda de Huffman, m_L m_R son protected
 class HuffmanDecoder : public Huffman
 {
@@ -11,6 +12,7 @@ public:
   Huffman *right() const { return this->m_R; }
   std::uint8_t symbol() const { return this->m_D; }
 };
+*/
 
 
 // intercambio output input
@@ -19,7 +21,7 @@ void decode(
     std::vector<std::uint8_t> &decoded);
 
 
-    
+
 int main(int argc, char **argv)
 {
   if (argc < 3)
@@ -73,11 +75,10 @@ void decode(
   }
 
   // reconstruir arbol
-  HuffmanDecoder h(nodos);
+  Huffman h(nodos);
 
   // NAvegar el arbol con los bits del mensaje codificado
-  Huffman *actual = &h; //empiezo en la raiz
-  HuffmanDecoder *nodo = static_cast<HuffmanDecoder *>(actual);
+  Huffman *nodo = &h; //empiezo en la raiz
   std::size_t pos = 0;
 
   std::size_t total = h.frequency(); // cantidad de simbolos que tengo que decodificar
@@ -97,16 +98,16 @@ void decode(
 
       // si el bit es 0 voy a la izquierda
       if(bit == 0){
-        nodo = static_cast<HuffmanDecoder *>(nodo->left());
+        nodo = nodo->left();
       }
       // si el bit es 1 voy a la derecha
       else{
-        nodo = static_cast<HuffmanDecoder *>(nodo->right());
+        nodo = nodo->right();
       }
     }
 
     decoded.push_back( nodo->symbol() );
-    nodo = static_cast<HuffmanDecoder *>(&h); // vuelvo a la raiz
+    nodo = &h; // vuelvo a la raiz
 
   }
 }
