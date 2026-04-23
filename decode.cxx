@@ -9,6 +9,7 @@ public:
   HuffmanDecoder(std::vector<Huffman *> &hf) : Huffman(hf) {}
   Huffman *left() const { return this->m_L; }
   Huffman *right() const { return this->m_R; }
+  std::uint8_t symbol() const { return this->m_D; }
 };
 
 
@@ -17,9 +18,26 @@ void decode(
     const std::vector<std::uint8_t> &encoded,
     std::vector<std::uint8_t> &decoded);
 
+
+    
 int main(int argc, char **argv)
 {
+  if (argc < 3)
+  {
+    std::cerr << "Usage: " << argv[0] << " input output" << std::endl;
+    return (EXIT_FAILURE);
+  }
+
+  std::vector<std::uint8_t> buffer, decoded;
+
+  read(buffer, argv[1]);
+  decode(buffer, decoded);
+  save(decoded, argv[2]);
+
+  return (EXIT_SUCCESS);
 }
+
+
 
 void decode(
     const std::vector<std::uint8_t> &encoded, // leo el .bin
@@ -56,6 +74,41 @@ void decode(
 
   // reconstruir arbol
   HuffmanDecoder h(nodos);
+
+  // NAvegar el arbol con los bits del mensaje codificado
+  Huffman *actual = &h; //empiezo en la raiz
+  HuffmanDecoder *nodo = static_cast<HuffmanDecoder *>(actual);
+  std::size_t pos = 0;
+
+  std::size_t total = h.frequency(); // cantidad de simbolos que tengo que decodificar
+  for (std::size_t i = 0; i < total; i++){
+    // navegar bit a bit hasta llegar a una hoja
+
+    while(nodo->left() != nullptr || nodo->right() != nullptr){
+      // leo un bit del mensaje codificado
+      std::uint8_t bit = (*ptr >> (7 - pos)) & 1;
+
+      //cuando pos llegue a 8 avanzo ptr y reseteo pos
+      pos++;
+      if (pos == 8){
+        pos = 0;
+        ptr++;
+      }
+
+      // si el bit es 0 voy a la izquierda
+      if(bit == 0){
+        nodo = static_cast<HuffmanDecoder *>(nodo->left());
+      }
+      // si el bit es 1 voy a la derecha
+      else{
+        nodo = static_cast<HuffmanDecoder *>(nodo->right());
+      }
+    }
+
+    decoded.push_back( nodo->symbol() );
+    nodo = static_cast<HuffmanDecoder *>(&h); // vuelvo a la raiz
+
+  }
 }
 
 // eof - decode.cxx
